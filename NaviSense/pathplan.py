@@ -1,9 +1,7 @@
 import numpy as np
 from scipy.ndimage import distance_transform_edt
-import matplotlib.pyplot as plt
 import cv2
-import math
-import time
+
 
 
 walkway = np.array([244, 35, 232])
