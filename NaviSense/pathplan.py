@@ -46,3 +46,13 @@ def max_value_angle(distant_transformed):
     angles = np.array([15,30,45,60,75,90,105,120,135,150,165,180])
     values = np.array([value_of_angle(distant_transformed,i) for i in angles])
     return angles[np.argmax(values)]
+
+def drawLine(cleaned, value):
+    origin_x = int(cleaned.shape[0]/2)
+    origin_y = int(cleaned.shape[1])
+    origin = (origin_x, origin_y)
+    points = angle_to_point(origin, value)
+    color = [255,0,0]
+    weight = 2
+    cleaned_line = cv2.line(cleaned, (origin_x, origin_y), points, color, weight)
+    return cleaned_line

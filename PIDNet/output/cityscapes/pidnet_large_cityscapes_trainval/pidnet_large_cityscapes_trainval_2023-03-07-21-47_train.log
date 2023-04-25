@@ -1,0 +1,61 @@
+2023-03-07 21:47:37,843 Namespace(cfg='configs/cityscapes/pidnet_large_cityscapes_trainval.yaml', seed=304, opts=['TRAIN.BATCH_SIZE_PER_GPU', '2'])
+2023-03-07 21:47:37,843 AUTO_RESUME: False
+CUDNN:
+  BENCHMARK: True
+  DETERMINISTIC: False
+  ENABLED: True
+DATASET:
+  DATASET: cityscapes
+  EXTRA_TRAIN_SET: 
+  NUM_CLASSES: 19
+  ROOT: data/
+  TEST_SET: list/cityscapes/val.lst
+  TRAIN_SET: list/cityscapes/trainval.lst
+GPUS: (0,)
+LOG_DIR: log
+LOSS:
+  BALANCE_WEIGHTS: [0.4, 1.0]
+  CLASS_BALANCE: False
+  OHEMKEEP: 131072
+  OHEMTHRES: 0.9
+  SB_WEIGHTS: 1.0
+  USE_OHEM: True
+MODEL:
+  ALIGN_CORNERS: True
+  NAME: pidnet_large
+  NUM_OUTPUTS: 2
+  PRETRAINED: pretrained_models/imagenet/PIDNet_L_ImageNet.pth.tar
+OUTPUT_DIR: output
+PIN_MEMORY: True
+PRINT_FREQ: 10
+TEST:
+  BASE_SIZE: 2048
+  BATCH_SIZE_PER_GPU: 6
+  FLIP_TEST: False
+  IMAGE_SIZE: [2048, 1024]
+  MODEL_FILE: 
+  MULTI_SCALE: False
+  OUTPUT_INDEX: 1
+TRAIN:
+  BASE_SIZE: 2048
+  BATCH_SIZE_PER_GPU: 2
+  BEGIN_EPOCH: 0
+  END_EPOCH: 484
+  EXTRA_EPOCH: 0
+  EXTRA_LR: 0.001
+  FLIP: True
+  IGNORE_LABEL: 255
+  IMAGE_SIZE: [1024, 1024]
+  LR: 0.01
+  MOMENTUM: 0.9
+  MULTI_SCALE: True
+  NESTEROV: False
+  OPTIMIZER: sgd
+  RESUME: False
+  SCALE_FACTOR: 16
+  SHUFFLE: True
+  WD: 0.0005
+WORKERS: 0
+2023-03-07 21:47:38,287 Attention!!!
+2023-03-07 21:47:38,287 Loaded 440 parameters!
+2023-03-07 21:47:38,288 Over!!!

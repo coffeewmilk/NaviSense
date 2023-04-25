@@ -1,7 +1,6 @@
-# Written by ME! as a demo for demonstration only 
-
+import _init_paths
 import numpy as np
-import models #need to locate!!
+import PIDNet.models #need to locate!!
 import torch
 import torch.nn.functional as F
 
@@ -30,8 +29,6 @@ color_map = [(128, 64,128),
              (119, 11, 32)]
 
 
-#By pass for module
-pretrain_path_l = './PIDNet/output/custom/pidnet_large_custom/best.pt'
 pretrain_path_s = './PIDNet/output/custom/pidnet_small_custom/best.pt'
 
 #Transfrom image to match traning data
@@ -62,15 +59,11 @@ def load_pretrained(model, pretrained):
     return model
 
 #Initilize model
-def init_model(small = False):
-    if small:
-        ModelSize = 'pidnet-s'
-        pretrain_path = pretrain_path_s
-    else: 
-        ModelSize = 'pidnet-l'
-        pretrain_path = pretrain_path_l
-
-    model = models.pidnet.get_pred_model(ModelSize, 3) #select output here
+def init_model():
+    
+    ModelSize = 'pidnet-s'
+    pretrain_path = pretrain_path_s
+    model = PIDNet.models.pidnet.get_pred_model(ModelSize, 3) #select output here
     model = load_pretrained(model, pretrain_path).cuda()
     model.eval()
     return model
