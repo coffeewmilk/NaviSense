@@ -1,3 +1,4 @@
+import _init_paths
 import NaviSense as ns
 import open3d as o3d
 import numpy as np
@@ -25,7 +26,7 @@ def process1(im_rgbd, cameraMatrix):
 
 
 # path for recorded bag file
-recorded_file = ""
+recorded_file = "../Video/extra/20230329_170533.bag"
 
 # initialize bag reader and config
 bag_reader = o3d.t.io.RSBagReader()
@@ -51,11 +52,11 @@ while not bag_reader.is_eof():
 
 
     map = ns.create_occupacny_map(cleaned)
-    value = ns.max_value_angle(map)
-    print(value)
+    angle, value = ns.max_value_angle(map)
+    print(angle)
 
 
-    cleaned_line = ns.drawLine(cleaned, value)
+    cleaned_line = ns.drawLine(cleaned, angle)
     cv2.imshow("line", cleaned_line)
    
     key = cv2.waitKey(1)

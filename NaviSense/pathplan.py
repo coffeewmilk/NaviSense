@@ -28,7 +28,7 @@ def mask_from_angle(shape, angle):
     origin_y = int(shape[1])
     points = angle_to_point((origin_x, origin_y), angle)
     thickness = 10
-    mask = cv2.line(mask, (origin_x, origin_y), points, 1, thickness)
+    mask = cv2.line(mask, (origin_x, origin_y), points, 1, thickness).astype(bool)
     return mask
 
 def value_of_angle(distant_transformed, angle):
@@ -37,15 +37,21 @@ def value_of_angle(distant_transformed, angle):
     #print(dist_transform)
     return np.sum(distant_transformed[mask])
 
-def isObstacle(mask, map):
+def obstacle_value(angle, map):
+    mask = mask_from_angle(map.shape, angle)
     covered = map[mask]
-    np.all(covered==walkway, axis=2)
+    value = np.sum(np.all(covered==walkway, axis=1))
+    return value
+
     
 
 def max_value_angle(distant_transformed):
     angles = np.array([15,30,45,60,75,90,105,120,135,150,165,180])
     values = np.array([value_of_angle(distant_transformed,i) for i in angles])
-    return angles[np.argmax(values)]
+    index = np.argmax(values)
+    maxangle = angles[index]
+    maxvalue = values[index]
+    return (maxangle, maxvalue)
 
 def drawLine(cleaned, value):
     origin_x = int(cleaned.shape[0]/2)

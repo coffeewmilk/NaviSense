@@ -4,7 +4,6 @@ import open3d as o3d
 import numpy as np
 import cv2 
 import sys
-import json
 
 
 def process1(im_rgbd, cameraMatrix):
@@ -24,7 +23,15 @@ def process1(im_rgbd, cameraMatrix):
     cleaned = ns.cleanup(wrapped)
     return cleaned
 
-# camera parameters
+
+
+# path for recorded bag file
+recorded_file = "../Video/20230202_135501.bag"
+
+# initialize bag reader and config
+bag_reader = o3d.t.io.RSBagReader()
+bag_reader.open(recorded_file)
+im_rgbd = bag_reader.next_frame()
 width = 1280; height = 720; fx = 649.302; fy = fx; cx = 649.934; cy = 335.776
 cameraMatrix = np.array([[fx, 0, cx], [0, fx, cy], [0, 0, 1]])
 intrinsic_t = o3d.core.Tensor(cameraMatrix)
@@ -32,19 +39,15 @@ intrinsic_t = o3d.core.Tensor(cameraMatrix)
 # initialize segmentation model
 model = ns.seg.init_model()
 
-# initialize and config camera
-with open('./Scripts/rs_config.json') as cf:
-    rs_cfg = o3d.t.io.RealSenseSensorConfig(json.load(cf))
 
-rs = o3d.t.io.RealSenseSensor()
-rs.init_sensor(rs_cfg, 0)
-rs.start_capture(False)  # true: start recording with capture
 
-while(True):
-    
-    # capture data and align them
-    im_rgbd = rs.capture_frame(True, True)  
+while not bag_reader.is_eof():
+
+    #segmented and cleaned
     cleaned = process1(im_rgbd, cameraMatrix)
+
+    #cv2.imshow("Mask", masked)
+    #cv2.imshow("wrappped", wrapped)
     cv2.imshow("Cleanuped", cleaned)
 
 
@@ -52,15 +55,16 @@ while(True):
     angle, value = ns.max_value_angle(map)
     print(angle)
 
+    ob_value = ns.obstacle_value(angle, cleaned)
 
     cleaned_line = ns.drawLine(cleaned, angle)
     cv2.imshow("line", cleaned_line)
-    
+   
     key = cv2.waitKey(1)
         # if pressed escape exit program
     if key == 27:
         cv2.destroyAllWindows()
         break
-    
+    im_rgbd = bag_reader.next_frame()
 
-rs.stop_capture()
+bag_reader.close()
