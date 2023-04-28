@@ -5,6 +5,8 @@ import cv2
 
 
 walkway = np.array([244, 35, 232])
+obstacle = np.array([128, 64, 128])
+
 def create_occupacny_map(img):
     occupancy_map = np.ones(img.shape[:2], dtype=np.int64)
     occupancy_map &= np.all(img == walkway, axis=2)
@@ -40,8 +42,12 @@ def value_of_angle(distant_transformed, angle):
 def obstacle_value(angle, map):
     mask = mask_from_angle(map.shape, angle)
     covered = map[mask]
-    value = np.sum(np.all(covered==walkway, axis=1))
-    return value
+    C_value = np.sum(np.all(covered==walkway, axis=1))
+    O_value = np.sum(np.all(covered==obstacle, axis=1))
+
+    return (C_value, O_value)
+
+
 
     
 

@@ -26,7 +26,7 @@ def process1(im_rgbd, cameraMatrix):
 
 
 # path for recorded bag file
-recorded_file = "../Video/20230202_135501.bag"
+recorded_file = "../Video/extra/20230329_172246.bag"
 
 # initialize bag reader and config
 bag_reader = o3d.t.io.RSBagReader()
@@ -39,6 +39,8 @@ intrinsic_t = o3d.core.Tensor(cameraMatrix)
 # initialize segmentation model
 model = ns.seg.init_model()
 
+# start at this time
+bag_reader.seek_timestamp(203839000)
 
 
 while not bag_reader.is_eof():
@@ -53,11 +55,13 @@ while not bag_reader.is_eof():
 
     map = ns.create_occupacny_map(cleaned)
     angle, value = ns.max_value_angle(map)
-    print(angle)
+    #print(angle)
 
-    ob_value = ns.obstacle_value(angle, cleaned)
+    C_value, O_value  = ns.obstacle_value(angle, cleaned)
 
     cleaned_line = ns.drawLine(cleaned, angle)
+    cv2.putText(img=cleaned_line, text=f'Certaity value: {str(C_value)}', org=(0, 300), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
+    cv2.putText(img=cleaned_line, text=f'Obstacle value: {str(O_value)}', org=(0, 400), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255, 0, 0),thickness=1)
     cv2.imshow("line", cleaned_line)
    
     key = cv2.waitKey(1)
