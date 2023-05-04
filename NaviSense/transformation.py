@@ -50,12 +50,22 @@ def getPlane(rgbd, intrinsic):
     pc.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
     pcl = o3d.t.geometry.PointCloud.to_legacy(pc)
     downpcl = pcl.voxel_down_sample(voxel_size=0.04)
-    plane_model, _ = downpcl.segment_plane(distance_threshold=0.05,
+    found = False
+    
+    for i in range(3):
+         plane_model, inliers = downpcl.segment_plane(distance_threshold=0.05,
                                          ransac_n=3,
                                          num_iterations=3000)
-                                        #or 0.05?
-    #inlier_cloud = downpcl.select_by_index(inliers)
-    [a, b, c, d] = plane_model
+         [a, b, c, d] = plane_model
+         if (np.abs(a) < 0.2 and np.abs(c) < 0.2):
+             found = True
+             #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, True")
+             break
+         downpcl = downpcl.select_by_index(inliers, invert=True)
+         #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, False")
+    if not found:
+        [a, b, c, d] = [0, 1, 0, 1.25] #bypass
+
     #ref_square = inlier_cloud.get_center()
     ref_square = [0, -0.0, -4] #bypass
 
