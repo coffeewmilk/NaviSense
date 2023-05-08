@@ -52,21 +52,27 @@ def getPlane(rgbd, intrinsic):
     downpcl = pcl.voxel_down_sample(voxel_size=0.04)
     found = False
     
-    for i in range(3):
-         plane_model, inliers = downpcl.segment_plane(distance_threshold=0.05,
-                                         ransac_n=3,
-                                         num_iterations=3000)
-         [a, b, c, d] = plane_model
-         if (np.abs(a) < 0.2 and np.abs(c) < 0.2):
-             found = True
-             #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, True")
-             break
-         downpcl = downpcl.select_by_index(inliers, invert=True)
-         #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, False")
+    for i in range(4):
+        #in case plane is not found
+        try:
+            plane_model, inliers = downpcl.segment_plane(distance_threshold=0.05,
+                                            ransac_n=3,
+                                            num_iterations=3000)
+        except:
+            break
+        [a, b, c, d] = plane_model
+        if (np.abs(a) < 0.3 and np.abs(c) < 0.3):
+            found = True
+            #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, True")
+            break
+        downpcl = downpcl.select_by_index(inliers, invert=True)
+        #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, False")
     if not found:
-        [a, b, c, d] = [0, 1, 0, 1.25] #bypass
-
+        plane_model = [0.05, 0.99, 0.1, 1.25] #bypass
+        [a, b, c, d] = plane_model
+    #print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0, Final value")
     #ref_square = inlier_cloud.get_center()
+
     ref_square = [0, -0.0, -4] #bypass
 
     square = getSquare(plane_model,1,ref_square) #1.5

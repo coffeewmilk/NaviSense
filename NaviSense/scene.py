@@ -40,6 +40,7 @@ def cleanup(img):
     mask = np.ones(img.shape[:2], dtype=bool)
     for color in color_map:
         mask &= ~np.all(clean == color, axis=2)
-    temp = np.apply_along_axis(color_similar_optimized,1,clean[mask])
-    clean[mask] = temp
+    if np.any(mask):
+        temp = np.apply_along_axis(color_similar_optimized,1,clean[mask])
+        clean[mask] = temp
     return clean

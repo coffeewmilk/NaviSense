@@ -26,8 +26,8 @@ def process1(im_rgbd, cameraMatrix):
 
 
 # path for recorded bag file
-#recorded_file = "../Video/extra/20230329_172246.bag"
-recorded_file = "../Video/extra/20230504_171902.bag"
+recorded_file = "../Video/extra/20230329_170533.bag"
+#recorded_file = "../Video/extra/20230504_171902.bag"
 
 # initialize bag reader and config
 bag_reader = o3d.t.io.RSBagReader()
@@ -41,9 +41,10 @@ intrinsic_t = o3d.core.Tensor(cameraMatrix)
 model = ns.seg.init_model()
 
 # start at this time
-#bag_reader.seek_timestamp(203839000)
-bag_reader.seek_timestamp(33870000)
-
+bag_reader.seek_timestamp(53024000)
+#bag_reader.seek_timestamp(33870000)
+l1 = 300
+l2 = 500
 
 while not bag_reader.is_eof():
 
@@ -54,18 +55,33 @@ while not bag_reader.is_eof():
     #cv2.imshow("wrappped", wrapped)
     cv2.imshow("Cleanuped", cleaned)
 
-
+    
+    cleaned_copy = np.copy(cleaned)
     map = ns.create_occupacny_map(cleaned)
-    angle, value = ns.max_value_angle(map)
+    angle, value = ns.max_value_angle(map, l1)
+    angle2, value2 = ns.max_value_angle(map, l2)
     #print(angle)
 
-    C_value, O_value  = ns.obstacle_value(angle, cleaned)
+    C_value, O_value  = ns.obstacle_value(angle, cleaned, l1)
+    C_value2, O_value2 = ns.obstacle_value(angle2, cleaned, l2)
 
-    cleaned_line = ns.drawLine(cleaned, angle)
-    cv2.putText(img=cleaned_line, text=f'Certaity value: {str(C_value)}', org=(0, 300), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
-    cv2.putText(img=cleaned_line, text=f'Obstacle value: {str(O_value)}', org=(0, 400), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255, 0, 0),thickness=1)
-    cv2.imshow("line", cleaned_line)
+    
+    ns.drawLine(cleaned, angle2, l2)
+    ns.drawLine(cleaned, angle, l1, [0,255,0])
+    cv2.putText(img=cleaned, text=f'Certaity value: {str(C_value)}', org=(0, 300), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
+    cv2.putText(img=cleaned, text=f'Obstacle value: {str(O_value)}', org=(0, 310), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255, 0, 0),thickness=1)
+    cv2.putText(img=cleaned, text=f'Certaity value: {str(C_value2)}', org=(0, 320), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
+    cv2.putText(img=cleaned, text=f'Obstacle value: {str(O_value2)}', org=(0, 330), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255, 0, 0),thickness=1)
+    cv2.putText(img=cleaned, text=f'value1: {str(value)}', org=(0, 350), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
+    cv2.putText(img=cleaned, text=f'value2: {str(value2)}', org=(0, 370), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
+    cv2.imshow("line", cleaned)
    
+    #test new algorithm
+    result = ns.hybrid_maximum_angle(map, cleaned_copy)
+    line_result = ns.hybrid_drawLine(cleaned_copy, result)
+    cv2.imshow("Hybrid", line_result)
+    
+
     key = cv2.waitKey(1)
         # if pressed escape exit program
     if key == 27:
