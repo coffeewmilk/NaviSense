@@ -99,10 +99,12 @@ def hybrid_drawLine(cleaned, data):
     color1 = [255,0,0]
     color2 = [0,255,0]
     
-    if len(cleaned) != 0:
+    if ((len(data[0]) != 0) or (len(data[1]) != 0)):
         if len(data[0]) != 0:
+            points_s = angle_to_point(origin, data[0][0], 100)
             points = angle_to_point(origin, data[0][0], 300)
             line = cv2.line(cleaned, (origin_x, origin_y), points, color1, weight)
+            line = cv2.line(cleaned, (origin_x, origin_y), points_s, color2, weight)
             return line
         points_s = angle_to_point(origin, data[1][0], 300)
         points_l = angle_to_point(origin, data[1][0], 500)
