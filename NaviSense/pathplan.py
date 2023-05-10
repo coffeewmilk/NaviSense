@@ -91,6 +91,18 @@ def hybrid_maximum_angle(distant_transformed, map):
             values2 = [angle, max_values2, W_value2, O_value2]
     return (values1, values2)
 
+
+def extract_angle(data):
+    if ((len(data[0]) != 0) or (len(data[1]) != 0)):
+        if len(data[0]) != 0:
+            return data[0][0]
+        return data[1][0]
+    return -1
+
+
+
+
+
 def hybrid_drawLine(cleaned, data):
     origin_x = int(cleaned.shape[0]/2)
     origin_y = int(cleaned.shape[1])

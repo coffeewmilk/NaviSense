@@ -89,7 +89,9 @@ if __name__ == "__main__":
         cv2.imshow("overlayed", overlayed)
 
         map = ns.create_occupacny_map(overlayed)
+        print(map.max())
         result = ns.hybrid_maximum_angle(map, overlayed)
+        print(ns.extract_angle(result))
         line_result = ns.hybrid_drawLine(overlayed, result)
         cv2.imshow("line", line_result)
         
