@@ -97,7 +97,7 @@ def hybrid_drawLine(cleaned, data):
     color1 = [255,0,0]
     color2 = [0,255,0]
     
-    if cleaned != None:
+    if len(cleaned) != 0:
         if len(data[0]) != 0:
             points = angle_to_point(origin, data[0][0], 300)
             line = cv2.line(cleaned, (origin_x, origin_y), points, color1, weight)

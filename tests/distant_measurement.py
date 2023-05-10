@@ -5,7 +5,8 @@ import numpy as np
 import cv2 
 import sys
 import json
-import multiprocessing
+import time
+
 
 
 def process1(im_rgbd, cameraMatrix):
@@ -16,14 +17,19 @@ def process1(im_rgbd, cameraMatrix):
 
     # image segmentation
     raw_image = cv2.cvtColor(np.asarray(im_rgbd.color), cv2.COLOR_BGR2RGB)
-    segmented = ns.seg.segmentationfun(model, raw_image)
 
     # transfrom to top view
-    wrapped, masked = ns.getTransform(point2d, segmented)
+    wrapped, masked = ns.getTransform(point2d, raw_image)
 
-    # cleanup some artifacts
-    cleaned = ns.cleanup(wrapped)
-    return cleaned
+    return raw_image, wrapped
+
+def mouse_callback(event, x, y, flags, frame):
+    if event == 2:
+        print(f"coords {x, y}")
+        frame_copy = np.copy(frame)
+        cv2.putText(img=frame_copy, text=f'Coordinates: x = {x}, y = {y}', org=(100, 400), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 255, 0),thickness=1)
+        cv2.circle(frame_copy, (x,y), 30, (0, 255, 0), 1)
+        cv2.imwrite(f"./tests/saved/{time.time()}.png", frame_copy)
 
 
 if __name__ == "__main__":
@@ -34,11 +40,6 @@ if __name__ == "__main__":
 
     # initialize segmentation model
     model = ns.seg.init_model()
-
-    # initialize feedback process and value
-    angle = multiprocessing.Value('i', 90)
-    sound_p = multiprocessing.Process(target=ns.metronome, args=(angle,))
-    sound_p.start()
 
     # initialize and config camera
     with open('./Scripts/rs_config.json') as cf:
@@ -52,25 +53,11 @@ if __name__ == "__main__":
         
         # capture data and align them
         im_rgbd = rs.capture_frame(True, True)  
-        cleaned = process1(im_rgbd, cameraMatrix)
-        cv2.imshow("Cleanuped", cleaned)
+        raw, wrapped = process1(im_rgbd, cameraMatrix)
+        cv2.imshow("Just wrap", wrapped)
+        cv2.setMouseCallback("Just wrap", mouse_callback, wrapped)
+        cv2.imshow("raw", raw)
 
-        #duplicate 
-        cleaned_copy = np.copy(cleaned)
-
-
-        map = ns.create_occupacny_map(cleaned)
-        angle.value, value = ns.max_value_angle(map)
-        print(angle)
-
-
-        cleaned_line = ns.drawLine(cleaned, angle.value)
-        cv2.imshow("line", cleaned_line)
-
-        #test new algorithm
-        #result = ns.hybrid_maximum_angle(map, cleaned_copy)
-        #line_result = ns.hybrid_drawLine(cleaned_copy, result)
-        #cv2.imshow("Hybrid", line_result)
         
         key = cv2.waitKey(1)
             # if pressed escape exit program
@@ -81,7 +68,3 @@ if __name__ == "__main__":
 
     rs.stop_capture()
 
-
-    #terminate process
-    sound_p.terminate()
-    sound_p.join()

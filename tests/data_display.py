@@ -26,7 +26,7 @@ def process1(im_rgbd, cameraMatrix):
 
 
 # path for recorded bag file
-recorded_file = "../Video/extra/20230329_170533.bag"
+recorded_file = "../Video/extra/20230504_171902.bag"
 #recorded_file = "../Video/extra/20230504_171902.bag"
 
 # initialize bag reader and config
@@ -41,7 +41,7 @@ intrinsic_t = o3d.core.Tensor(cameraMatrix)
 model = ns.seg.init_model()
 
 # start at this time
-bag_reader.seek_timestamp(53024000)
+#bag_reader.seek_timestamp(53024000)
 #bag_reader.seek_timestamp(33870000)
 l1 = 300
 l2 = 500
