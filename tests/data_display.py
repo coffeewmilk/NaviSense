@@ -4,6 +4,7 @@ import open3d as o3d
 import numpy as np
 import cv2 
 import sys
+import time
 
 
 def process1(im_rgbd, cameraMatrix):
@@ -77,8 +78,11 @@ while not bag_reader.is_eof():
     cv2.imshow("line", cleaned)
    
     #test new algorithm
+    time1 = time.time()
     result = ns.hybrid_maximum_angle(map, cleaned_copy)
     line_result = ns.hybrid_drawLine(cleaned_copy, result)
+    time2 = time.time()
+    print(f'Time taken = {time2-time1}')
     cv2.imshow("Hybrid", line_result)
     
 

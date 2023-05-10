@@ -4,7 +4,7 @@ import cv2
 import open3d as o3d
 from matplotlib import pyplot as plt
 import time
-from transformation import rearrange
+from .transformation import rearrange
 
 
 def upperbody_obstacle_crop(rgbd, instrinstic):
@@ -22,10 +22,13 @@ def upperbody_obstacle_crop(rgbd, instrinstic):
     return downpcl_crop 
 
 def extractRegion(pc):
-    with o3d.utility.VerbosityContextManager(
-        o3d.utility.VerbosityLevel.Debug) as cm:
+    # with o3d.utility.VerbosityContextManager(
+    #     o3d.utility.VerbosityLevel.Debug) as cm:
+    try:
         labels = pc.cluster_dbscan(eps=0.25, min_points=30, print_progress=False)
-    max_label = labels.max().item()
+        max_label = labels.max().item()
+    except:
+        max_label = 0
 
     boxes = []
     if max_label != 0:
@@ -63,12 +66,11 @@ def extract_points(boxes):
         z3d = points[:,2]
         x = x3d*72 + 262
         y = (z3d+3)*72 +393
-        print(f'z3d = {z3d}, y = {y}')
         points2d.append((np.stack((x,y), axis=1)).astype(int))
     return points2d
 
 def obstacle_overlay(map, points2d):
     map_copy = np.copy(map)
     for each in points2d:
-        cv2.drawContours(map_copy, [rearrange(each)], -1, (255, 255, 255), -1)
+        cv2.drawContours(map_copy, [rearrange(each)], -1, (128, 64, 128), -1)
     return map_copy

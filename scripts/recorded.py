@@ -4,6 +4,7 @@ import open3d as o3d
 import numpy as np
 import cv2 
 import sys
+import time
 
 
 def process1(im_rgbd, cameraMatrix):
@@ -43,6 +44,8 @@ model = ns.seg.init_model()
 
 while not bag_reader.is_eof():
 
+    time1 = time.time()
+
     #segmented and cleaned
     cleaned = process1(im_rgbd, cameraMatrix)
 
@@ -61,6 +64,9 @@ while not bag_reader.is_eof():
    
     key = cv2.waitKey(1)
         # if pressed escape exit program
+
+    time2 = time.time()
+    print(f'time taken = {time2-time1}')
     if key == 27:
         cv2.destroyAllWindows()
         break
