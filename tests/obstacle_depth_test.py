@@ -4,7 +4,6 @@ import open3d as o3d
 import numpy as np
 import cv2 
 import sys
-from obstacle_depth import upperbody_obstacle_crop, extractRegion, show_region, extract_points, obstacle_overlay
 import multiprocessing
 import time 
 
@@ -88,7 +87,11 @@ if __name__ == "__main__":
         
         overlayed = ns.depthbased.obstacle_overlay(cleaned, ob_points)
         cv2.imshow("overlayed", overlayed)
-        
+
+        map = ns.create_occupacny_map(overlayed)
+        result = ns.hybrid_maximum_angle(map, overlayed)
+        line_result = ns.hybrid_drawLine(overlayed, result)
+        cv2.imshow("line", line_result)
         
         
         key = cv2.waitKey(1)

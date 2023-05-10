@@ -1,0 +1,11 @@
+matplotlib==3.7.1
+numpy==1.24.2
+numpy==1.23.5
+open3d==0.16.0
+opencv_python==4.7.0.68
+pygame==2.4.0
+pyrealsense2==2.53.1.4623
+scipy==1.10.1
+torch==1.13.1+cu116
+torchvision==0.14.1
+yacs==0.1.8
