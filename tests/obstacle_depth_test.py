@@ -60,10 +60,17 @@ def process2(queue_in, queue_out):
 
 if __name__ == "__main__":
 
+    # initialize process2 
     queue_in = multiprocessing.Queue()
     queue_out = multiprocessing.Queue()
     process2p = multiprocessing.Process(target=process2, args=(queue_in, queue_out))
     process2p.start()
+
+
+    # initialize feedback process and value
+    angle = multiprocessing.Value('i', 90)
+    sound_p = multiprocessing.Process(target=ns.metronome, args=(angle,))
+    sound_p.start()
 
 
     while not bag_reader.is_eof():
@@ -89,9 +96,11 @@ if __name__ == "__main__":
         cv2.imshow("overlayed", overlayed)
 
         map = ns.create_occupacny_map(overlayed)
-        print(map.max())
         result = ns.hybrid_maximum_angle(map, overlayed)
-        print(ns.extract_angle(result))
+        
+        # sent angle
+        angle.value = ns.extract_angle(result)
+
         line_result = ns.hybrid_drawLine(overlayed, result)
         cv2.imshow("line", line_result)
         
@@ -110,4 +119,7 @@ if __name__ == "__main__":
 
     #terminate process
     process2p.terminate()
+    sound_p.terminate()
     process2p.join()
+    sound_p.join()
+

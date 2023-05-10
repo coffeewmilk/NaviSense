@@ -100,9 +100,6 @@ def extract_angle(data):
     return -1
 
 
-
-
-
 def hybrid_drawLine(cleaned, data):
     origin_x = int(cleaned.shape[0]/2)
     origin_y = int(cleaned.shape[1])
@@ -118,7 +115,7 @@ def hybrid_drawLine(cleaned, data):
             line = cv2.line(cleaned, (origin_x, origin_y), points, color1, weight)
             line = cv2.line(cleaned, (origin_x, origin_y), points_s, color2, weight)
             return line
-        points_s = angle_to_point(origin, data[1][0], 300)
+        points_s = angle_to_point(origin, data[1][0], 200)
         points_l = angle_to_point(origin, data[1][0], 500)
         line = cv2.line(cleaned, (origin_x, origin_y), points_l, color1, weight)
         line = cv2.line(line, (origin_x, origin_y), points_s, color2, weight)
