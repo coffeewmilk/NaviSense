@@ -6,7 +6,7 @@ the system use two different method to detect obstacle
 1. floor level obstacle detection is powered by PIDNet, an image segmentation machine learning model. The model is then trained with additional 300+ images of sidewalks around Chulalongkorn University.
 2. upper floor level obstacle detection is powered by Open3d, an open source 3d python library. The point clouds from depth data is clustered and then borders were drawn for each clustered group.
 
-for further information read the report or the flowchart inside docs folder
+for further information read the report or the flowchart inside docs folder.
 The code was written and test on Asus zephyrus g14 with Intel realsense d455. the breif specs are as followed
 - Ryzen 9 5900hs
 - RTX 3060
@@ -16,12 +16,13 @@ The code was written and test on Asus zephyrus g14 with Intel realsense d455. th
 # To run the code
 1. install dependencies with `pip install -r requirements.txt`
 2. make sure pytorch with gpu enabled and realsense SDK are installed
-### with a recorded rgbd file 
+### With a recorded rgbd file 
 1. head into recorded.py inside scripts folder and change the path on line 29th to your desire path
 2. with the terminal on Navisense directory run `py ./scripts/recorded.py` 
 ### with the camera connected
 - with the terminal on Navisense directory run `py ./scripts/realtime.py` for regular OpenCv windows
-- with the terminal on Navisense directory run `py ./scripts/with_gui.py` for the graphic user interface windows version **the window might not fit your screen**
+- with the terminal on Navisense directory run `py ./scripts/with_gui.py` for the graphic user interface windows version.
+**the window might not fit your screen**
 
 # Please note
 1. make sure your gpu is Nvidia, has CUDA cores and sufficient vram (the written machine has 6gb)
