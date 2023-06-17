@@ -27,7 +27,7 @@ The code was written and test on Asus zephyrus g14 with Intel realsense d455. th
 # Please note
 1. make sure your gpu is Nvidia, has CUDA cores and sufficient vram (the written machine has 6gb)
 2. if your interpreter is not `py` replace `py` with your python interpreter. for example `python3`
-3. make sure your terminal directory is `.../Navisense'
+3. make sure your terminal directory is `.../Navisense`
 4. if you have a problem with connecting camera, try using realsense SDK tools to see if you camera show up or has the right software
 5. if you wish to change the camera to another Intel realsense model. change the setting inside rs_config.json in scripts folder
 
