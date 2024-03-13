@@ -1,42 +1,69 @@
-# NaviSense
-Navigation assistance for visually impaired person project using the combination of depth and color data from the RGBD camera to navigate 
 
-# About the Project
-the system use two different method to detect obstacle
-1. floor level obstacle detection is powered by PIDNet, an image segmentation machine learning model. The model is then trained with additional 300+ images of sidewalks around Chulalongkorn University.
-2. upper floor level obstacle detection is powered by Open3d, an open source 3d python library. The point clouds from depth data is clustered and then borders were drawn for each clustered group.
+# NaviSense: Navigation Assistance for the Visually Impaired
+## This project utilizes a combination of depth and color data from an RGB-D camera to create a navigation assistance system for visually impaired people.
 
-for further information read the report or the flowchart inside docs folder.
-The code was written and test on Asus zephyrus g14 with Intel realsense d455. the breif specs are as followed
-- Ryzen 9 5900hs
-- RTX 3060
-- 16 gb of ram
-- 2560 x 1440 display
+<div style="text-align: center;">
+    <img width="100%" src="/Navisense_demo.gif">
+</div>
 
-# To run the code
-1. install dependencies with `pip install -r requirements.txt`
-2. make sure pytorch with gpu enabled and realsense SDK are installed
-### With a recorded rgbd file 
-1. head into recorded.py inside scripts folder and change the path on line 29th to your desire path
-2. with the terminal on Navisense directory run `py ./scripts/recorded.py` 
-### with the camera connected
-- with the terminal on Navisense directory run `py ./scripts/realtime.py` for regular OpenCv windows
-- with the terminal on Navisense directory run `py ./scripts/with_gui.py` for the graphic user interface windows version.
-**the window might not fit your screen**
+## About the Project
+NaviSense employs two distinct methods for obstacle detection:
 
-# Please note
-1. make sure your gpu is Nvidia, has CUDA cores and sufficient vram (the written machine has 6gb)
-2. if your interpreter is not `py` replace `py` with your python interpreter. for example `python3`
-3. make sure your terminal directory is `.../Navisense`
-4. if you have a problem with connecting camera, try using realsense SDK tools to see if you camera show up or has the right software
-5. if you wish to change the camera to another Intel realsense model. change the setting inside rs_config.json in scripts folder
+1. Floor Level Detection: A machine learning model known as PIDNet is used to identify ground-level obstacles like curbs or uneven sidewalks. This model was trained on a comprehensive dataset of images specifically captured around Chulalongkorn University.
 
-# folder description
-- **Navisense** contains the functions necessary to run the code
-- **PIDNet** contains the partial PIDNet model leaving out unnecessary files and scripts
-- **docs** contains flowcharts of the system
-- **scripts** contains scrips used to run the system
+2. Upper Level Detection: For obstacles situated higher up, such as hanging signs or doorways, NaviSense leverages the Open3D library. This library analyzes the 3D point cloud data obtained from the camera's depth sensor to recognize objects and establish boundaries around them.
+For further details regarding the system's architecture and operation, please refer to the report or flowchart located within the project's documentation folder (docs).
 
+## System Requirements
+While NaviSense was developed and tested on a specific computer setup, it has the potential to run on other machines with comparable capabilities. Here's a breakdown of the requirements:
+
+## Hardware:
+A computer equipped with an Nvidia graphics card containing CUDA cores and sufficient VRAM (minimum recommendation: 6GB)
+An Intel RealSense depth camera (specifically, the D455 model was used for development)
+## Software:
+Python with PyTorch (GPU-enabled version)
+RealSense SDK
+## Running the Code
+1. **Install Dependencies:** Open a terminal window and navigate to the project directory (Navisense). Subsequently, run the following command to install the necessary Python libraries:
+`pip install -r requirements.txt`
+
+2. **GPU and Camera Verification:**
+Ensure your graphics card is Nvidia and has CUDA cores enabled.
+Utilize the RealSense SDK tools to confirm that your camera is recognized and functioning properly.
+
+3. **Choosing Your Input Method:**
+   - Recorded Data: If you possess a pre-recorded video file containing depth and color data (RGBD), you can utilize the recorded.py script. Simply modify the file path on line 29 of this script to point to your desired video. Then, execute the script from the terminal:
+
+     `py ./scripts/recorded.py`
+
+   - **Live Camera:** To employ NaviSense with a live camera feed, you have two options:
+
+     - **Basic Window:** Run the realtime.py script for a basic OpenCV window display:
+
+       `py ./scripts/realtime.py`
+       
+     - **Graphical User Interface (GUI):** For a more user-friendly interface, run the with_gui.py script:
+
+       `py ./scripts/with_gui.py`
+       
+       Please note: The GUI window size might not automatically adjust to your screen size.
+
+## Troubleshooting Tips
+**Python Interpreter:** If "py" is not your designated Python interpreter command, replace it with the appropriate command for your system (e.g., "python3").
+Terminal Directory: Before running any scripts, ensure your terminal is pointing to the main project directory (Navisense).
+
+**Camera Connection Issues:** If you encounter problems connecting the camera, utilize the RealSense SDK tools to diagnose the issue.
+
+**Changing Camera Model:** To utilize a different Intel RealSense camera model, adjust the settings within the rs_config.json file located in the scripts folder.
+
+## Folder Description
+**Navisense:** Contains the core functions necessary to run the code.
+
+**PIDNet:** Includes a pre-trained PIDNet model with unnecessary files and scripts removed.
+
+**docs:** Stores flowcharts that illustrate the system's architecture.
+
+**scripts:** Holds the Python scripts used to operate the system.
 
 
 
