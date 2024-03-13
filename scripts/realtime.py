@@ -5,6 +5,7 @@ import numpy as np
 import cv2 
 import sys
 import json
+import multiprocessing
 
 
 def process1(im_rgbd, cameraMatrix):
@@ -24,43 +25,63 @@ def process1(im_rgbd, cameraMatrix):
     cleaned = ns.cleanup(wrapped)
     return cleaned
 
-# camera parameters
-width = 1280; height = 720; fx = 649.302; fy = fx; cx = 649.934; cy = 335.776
-cameraMatrix = np.array([[fx, 0, cx], [0, fx, cy], [0, 0, 1]])
-intrinsic_t = o3d.core.Tensor(cameraMatrix)
 
-# initialize segmentation model
-model = ns.seg.init_model()
+if __name__ == "__main__":
+    # camera parameters
+    width = 1280; height = 720; fx = 649.302; fy = fx; cx = 649.934; cy = 335.776
+    cameraMatrix = np.array([[fx, 0, cx], [0, fx, cy], [0, 0, 1]])
+    intrinsic_t = o3d.core.Tensor(cameraMatrix)
 
-# initialize and config camera
-with open('./Scripts/rs_config.json') as cf:
-    rs_cfg = o3d.t.io.RealSenseSensorConfig(json.load(cf))
+    # initialize segmentation model
+    model = ns.seg.init_model()
 
-rs = o3d.t.io.RealSenseSensor()
-rs.init_sensor(rs_cfg, 0)
-rs.start_capture(False)  # true: start recording with capture
+    # initialize feedback process and value
+    angle = multiprocessing.Value('i', 90)
+    sound_p = multiprocessing.Process(target=ns.metronome, args=(angle,))
+    sound_p.start()
 
-while(True):
-    
-    # capture data and align them
-    im_rgbd = rs.capture_frame(True, True)  
-    cleaned = process1(im_rgbd, cameraMatrix)
-    cv2.imshow("Cleanuped", cleaned)
+    # initialize and config camera
+    with open('./Scripts/rs_config.json') as cf:
+        rs_cfg = o3d.t.io.RealSenseSensorConfig(json.load(cf))
+
+    rs = o3d.t.io.RealSenseSensor()
+    rs.init_sensor(rs_cfg, 0)
+    rs.start_capture(False)  # true: start recording with capture
+
+    while(True):
+        
+        # capture data and align them
+        im_rgbd = rs.capture_frame(True, True)  
+        cleaned = process1(im_rgbd, cameraMatrix)
+        cv2.imshow("Cleanuped", cleaned)
+
+        #duplicate 
+        cleaned_copy = np.copy(cleaned)
 
 
-    map = ns.create_occupacny_map(cleaned)
-    angle, value = ns.max_value_angle(map)
-    print(angle)
+        map = ns.create_occupacny_map(cleaned)
+        angle.value, value = ns.max_value_angle(map)
+        print(angle)
 
 
-    cleaned_line = ns.drawLine(cleaned, angle)
-    cv2.imshow("line", cleaned_line)
-    
-    key = cv2.waitKey(1)
-        # if pressed escape exit program
-    if key == 27:
-        cv2.destroyAllWindows()
-        break
-    
+        cleaned_line = ns.drawLine(cleaned, angle.value)
+        cv2.imshow("line", cleaned_line)
 
-rs.stop_capture()
+        #test new algorithm
+        #result = ns.hybrid_maximum_angle(map, cleaned_copy)
+        #line_result = ns.hybrid_drawLine(cleaned_copy, result)
+        #cv2.imshow("Hybrid", line_result)
+        
+        key = cv2.waitKey(1)
+            # if pressed escape exit program
+        if key == 27:
+            cv2.destroyAllWindows()
+            break
+        
+
+    rs.stop_capture()
+
+
+    #terminate process
+    sound_p.terminate()
+    sound_p.join()

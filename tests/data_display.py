@@ -4,6 +4,7 @@ import open3d as o3d
 import numpy as np
 import cv2 
 import sys
+import time
 
 
 def process1(im_rgbd, cameraMatrix):
@@ -26,7 +27,7 @@ def process1(im_rgbd, cameraMatrix):
 
 
 # path for recorded bag file
-recorded_file = "../Video/extra/20230329_170533.bag"
+recorded_file = "../Video/extra/20230504_171902.bag"
 #recorded_file = "../Video/extra/20230504_171902.bag"
 
 # initialize bag reader and config
@@ -41,7 +42,7 @@ intrinsic_t = o3d.core.Tensor(cameraMatrix)
 model = ns.seg.init_model()
 
 # start at this time
-bag_reader.seek_timestamp(53024000)
+#bag_reader.seek_timestamp(53024000)
 #bag_reader.seek_timestamp(33870000)
 l1 = 300
 l2 = 500
@@ -77,8 +78,11 @@ while not bag_reader.is_eof():
     cv2.imshow("line", cleaned)
    
     #test new algorithm
+    time1 = time.time()
     result = ns.hybrid_maximum_angle(map, cleaned_copy)
     line_result = ns.hybrid_drawLine(cleaned_copy, result)
+    time2 = time.time()
+    print(f'Time taken = {time2-time1}')
     cv2.imshow("Hybrid", line_result)
     
 
