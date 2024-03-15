@@ -7,6 +7,18 @@
 </div>
 
 ## About the Project
+
+<div align="center">
+    <img width="50%" src="/flow_diagram.jpg" >
+    <p display="block"> Overall flow diagram </p>
+</div>
+
+<div align="center">
+    <img width="50%" src="/process_diagram.jpg">
+    <p display="block"> Threads flow diagram </p>
+</div>
+
+
 NaviSense employs two distinct methods for obstacle detection:
 
 1. Floor Level Detection: A machine learning model known as PIDNet is used to identify ground-level obstacles like curbs or uneven sidewalks. This model was trained on a comprehensive dataset of images specifically captured around Chulalongkorn University.
